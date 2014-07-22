@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from StringIO import StringIO
-import urllib2
+from io import StringIO
+import urllib.request
+from urllib.request import urlopen
 import gzip
 from pandas import Series, DataFrame
 import numpy as np
@@ -15,11 +16,11 @@ get_ipython().magic(u'matplotlib inline')
 
 # Function to read text files
 def readTextFile(url):
-    request = urllib2.Request(url)
+    request = urllib.request(url)
 
     # Adding user to header for NHC user logs
     request.add_header("User-agent", "Unidata Python Client Test")
-    response = urllib2.urlopen(request)
+    response = urlopen(request)
 
     # Store data response in a string buffer.
     sio_buffer = StringIO(response.read())
@@ -28,11 +29,11 @@ def readTextFile(url):
 
 # Function to open and read zipped files
 def readGZFile(url):
-    request = urllib2.Request(url)
+    request = urllib.request(url)
 
     # Adding user to header for NHC user logs
     request.add_header("User-agent", "Unidata Python Client Test")
-    response = urllib2.urlopen(request)
+    response = urlopen(request)
 
     # Store data response in a string buffer.
     sio_buffer = StringIO(response.read())
@@ -197,10 +198,10 @@ class StormSelector:
     
     # Method to test if files exist for the selected storm
     def test_url(self,url):
-        request = urllib2.Request(url)
+        request = urllib.request(url)
         request.get_method = lambda : 'HEAD'
         try:
-            response = urllib2.urlopen(request)
+            response = urlopen(request)
             return True
         except:
             return False
@@ -240,7 +241,7 @@ class StormSelector:
             else:
                 message = message + "best track"           
                 
-        print message
+        print (message)
         
 # Class to gather data from storm files
 class HandleStormData:
@@ -438,7 +439,7 @@ class Plotting:
         self.frameNumber.value = 0
         self.refreshDisplay()
         # Setting up color cycle for multiple tracks
-        colormap = plt.cm.gist_rainbow
+        colormap = plt.cm('gist_rainbow')
         color_cycle = ([colormap(i) for i in np.linspace(0, 0.9, len(self.modelList))])
         self.alltimes = []
         # FOR look to create data for tracks and to set color for track
